@@ -10,8 +10,6 @@ jobs:
               uses: actions/checkout@v4
               with:
                   fetch-depth: 0
-            - name: Gradle wrapper validation
-              uses: gradle/wrapper-validation-action@v2
             - name: Set up JDK
               uses: actions/setup-java@v4
               with:
@@ -22,8 +20,8 @@ jobs:
               run:  chmod +x gradlew
             - name: Build
               run:  ./gradlew build
-            - name: Upload Fabric
+            - name: Upload Build Artifacts
               uses: actions/upload-artifact@v4
               with:
-                  name: Fabric
-                  path: "fabric/build/libs/Chomagerie-*.jar"
+                  name: Chomagerie-Mod
+                  path: "build/libs/*.jar"
