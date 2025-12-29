@@ -45,26 +45,17 @@ public class ShulkerRefillHandler {
     }
 
     /**
-     * Tente de recharger un slot vide depuis les shulker boxes dans l'inventaire
-     * @param player Le joueur
-     * @param emptySlot Le slot qui vient de se vider
-     * @param itemToRefill L'item à recharger
+     * Cherche et extrait un item d'une shulker box dans un inventaire donné
+     * @param sourceInventory L'inventaire à parcourir (peut être l'ender chest)
+     * @param targetInventory L'inventaire où mettre l'item extrait (inventaire du joueur)
+     * @param targetSlot Le slot où mettre l'item extrait
+     * @param itemToRefill L'item à rechercher
+     * @return true si un item a été trouvé et extrait
      */
-    public static void tryRefillFromShulker(PlayerEntity player, int emptySlot, Item itemToRefill) {
-        if (player.getEntityWorld().isClient()) {
-            return; // Ne fonctionne que côté serveur
-        }
-
-        Inventory inventory = player.getInventory();
-
-        // Vérifier si le joueur a déjà l'item dans son inventaire principal
-        if (hasItemInMainInventory(inventory, itemToRefill)) {
-            return; // Ne pas refill si l'item est déjà présent ailleurs dans l'inventaire
-        }
-
+    private static boolean tryRefillFromInventoryShulkers(Inventory sourceInventory, Inventory targetInventory, int targetSlot, Item itemToRefill) {
         // Parcourir l'inventaire à la recherche de shulker boxes
-        for (int i = 0; i < inventory.size(); i++) {
-            ItemStack stack = inventory.getStack(i);
+        for (int i = 0; i < sourceInventory.size(); i++) {
+            ItemStack stack = sourceInventory.getStack(i);
 
             if (isShulkerBox(stack.getItem())) {
                 // Vérifier le contenu de la shulker box
@@ -89,8 +80,8 @@ public class ShulkerRefillHandler {
                         ItemStack refillStack = shulkerItem.copy();
                         refillStack.setCount(amountToTake);
 
-                        // Mettre l'item dans le slot du joueur
-                        inventory.setStack(emptySlot, refillStack);
+                        // Mettre l'item dans le slot du joueur (targetInventory)
+                        targetInventory.setStack(targetSlot, refillStack);
 
                         // Retirer l'item de la shulker box
                         shulkerItem.decrement(amountToTake);
@@ -110,13 +101,43 @@ public class ShulkerRefillHandler {
 
                         // Mettre à jour la shulker box avec le nouveau contenu
                         stack.set(DataComponentTypes.CONTAINER, ContainerComponent.fromStacks(newContents));
-                        inventory.markDirty();
+                        sourceInventory.markDirty();
+                        targetInventory.markDirty();
 
-                        return; // Refill effectué, on arrête
+                        return true; // Refill effectué
                     }
                 }
             }
         }
+        return false; // Aucun item trouvé
+    }
+
+    /**
+     * Tente de recharger un slot vide depuis les shulker boxes dans l'inventaire et l'ender chest
+     * @param player Le joueur
+     * @param emptySlot Le slot qui vient de se vider
+     * @param itemToRefill L'item à recharger
+     */
+    public static void tryRefillFromShulker(PlayerEntity player, int emptySlot, Item itemToRefill) {
+        if (player.getEntityWorld().isClient()) {
+            return; // Ne fonctionne que côté serveur
+        }
+
+        Inventory inventory = player.getInventory();
+
+        // Vérifier si le joueur a déjà l'item dans son inventaire principal
+        if (hasItemInMainInventory(inventory, itemToRefill)) {
+            return; // Ne pas refill si l'item est déjà présent ailleurs dans l'inventaire
+        }
+
+        // 1. Essayer d'abord dans l'inventaire principal
+        if (tryRefillFromInventoryShulkers(inventory, inventory, emptySlot, itemToRefill)) {
+            return; // Refill effectué depuis l'inventaire
+        }
+
+        // 2. Si rien trouvé, chercher dans l'ender chest
+        Inventory enderChest = player.getEnderChestInventory();
+        tryRefillFromInventoryShulkers(enderChest, inventory, emptySlot, itemToRefill);
     }
 }
 
