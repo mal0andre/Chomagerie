@@ -3,6 +3,7 @@ package tech.maloandre.chomagerie.client.config;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import net.fabricmc.loader.api.FabricLoader;
+import tech.maloandre.chomagerie.client.network.ClientNetworkHandler;
 import tech.maloandre.chomagerie.config.ModState;
 
 import java.io.IOException;
@@ -65,6 +66,8 @@ public class ChomagerieConfig {
             Files.writeString(CONFIG_PATH, json);
             // Synchroniser ModState après la sauvegarde
             ModState.setClientEnabled(this.shulkerRefill.isEnabled());
+            // Envoyer la configuration au serveur
+            ClientNetworkHandler.sendConfigToServer();
         } catch (IOException e) {
             System.err.println("Erreur lors de la sauvegarde de la configuration de Chomagerie: " + e.getMessage());
         }

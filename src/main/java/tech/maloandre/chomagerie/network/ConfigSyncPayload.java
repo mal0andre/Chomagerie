@@ -1,0 +1,52 @@
+package tech.maloandre.chomagerie.network;
+
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import net.minecraft.network.RegistryByteBuf;
+import net.minecraft.network.codec.PacketCodec;
+import net.minecraft.network.packet.CustomPayload;
+import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.util.Identifier;
+import tech.maloandre.chomagerie.Chomagerie;
+import tech.maloandre.chomagerie.config.ServerConfig;
+
+/**
+ * Paquet pour synchroniser la configuration du client vers le serveur
+ */
+public record ConfigSyncPayload(boolean shulkerRefillEnabled, boolean showRefillMessages) implements CustomPayload {
+
+    public static final CustomPayload.Id<ConfigSyncPayload> ID =
+        new CustomPayload.Id<>(Identifier.of(Chomagerie.MOD_ID, "config_sync"));
+
+    public static final PacketCodec<RegistryByteBuf, ConfigSyncPayload> CODEC = PacketCodec.of(
+        (value, buf) -> {
+            buf.writeBoolean(value.shulkerRefillEnabled);
+            buf.writeBoolean(value.showRefillMessages);
+        },
+        (buf) -> new ConfigSyncPayload(buf.readBoolean(), buf.readBoolean())
+    );
+
+
+
+    @Override
+    public Id<? extends CustomPayload> getId() {
+        return ID;
+    }
+
+    /**
+     * Enregistre le handler côté serveur
+     */
+    public static void registerServerHandler() {
+        ServerPlayNetworking.registerGlobalReceiver(ID, (payload, context) -> {
+            ServerPlayerEntity player = context.player();
+
+            // Mettre à jour la configuration du joueur côté serveur
+            ServerConfig config = ServerConfig.getInstance();
+            config.setShulkerRefillEnabled(player.getUuid(), payload.shulkerRefillEnabled);
+            config.setShowRefillMessages(player.getUuid(), payload.showRefillMessages);
+
+            Chomagerie.LOGGER.info("Configuration synchronisée pour le joueur {} - ShulkerRefill: {}",
+                player.getName().getString(), payload.shulkerRefillEnabled);
+        });
+    }
+}
+

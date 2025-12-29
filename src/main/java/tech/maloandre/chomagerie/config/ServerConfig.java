@@ -1,0 +1,122 @@
+package tech.maloandre.chomagerie.config;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
+import net.fabricmc.loader.api.FabricLoader;
+
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
+
+/**
+ * Configuration serveur pour stocker les préférences de chaque joueur
+ */
+public class ServerConfig {
+    private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
+    private static final Path CONFIG_DIR = FabricLoader.getInstance().getConfigDir().resolve("chomagerie");
+    private static final Path PLAYERS_CONFIG_PATH = CONFIG_DIR.resolve("players.json");
+
+    private static ServerConfig instance;
+    private Map<String, PlayerConfig> playerConfigs = new HashMap<>();
+
+    private ServerConfig() {
+        load();
+    }
+
+    public static ServerConfig getInstance() {
+        if (instance == null) {
+            instance = new ServerConfig();
+        }
+        return instance;
+    }
+
+    private void load() {
+        try {
+            Files.createDirectories(CONFIG_DIR);
+
+            if (Files.exists(PLAYERS_CONFIG_PATH)) {
+                String json = Files.readString(PLAYERS_CONFIG_PATH);
+                Map<String, PlayerConfig> loaded = GSON.fromJson(json,
+                    new TypeToken<Map<String, PlayerConfig>>(){}.getType());
+                if (loaded != null) {
+                    playerConfigs = loaded;
+                }
+            }
+        } catch (IOException e) {
+            System.err.println("Erreur lors du chargement de la configuration serveur de Chomagerie: " + e.getMessage());
+        }
+    }
+
+    public void save() {
+        try {
+            Files.createDirectories(CONFIG_DIR);
+            String json = GSON.toJson(playerConfigs);
+            Files.writeString(PLAYERS_CONFIG_PATH, json);
+        } catch (IOException e) {
+            System.err.println("Erreur lors de la sauvegarde de la configuration serveur de Chomagerie: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Récupère la configuration d'un joueur
+     */
+    public PlayerConfig getPlayerConfig(UUID playerUuid) {
+        String uuidString = playerUuid.toString();
+        return playerConfigs.computeIfAbsent(uuidString, k -> new PlayerConfig());
+    }
+
+    /**
+     * Met à jour la configuration d'un joueur
+     */
+    public void setPlayerConfig(UUID playerUuid, PlayerConfig config) {
+        playerConfigs.put(playerUuid.toString(), config);
+        save();
+    }
+
+    /**
+     * Active/désactive le ShulkerRefill pour un joueur
+     */
+    public void setShulkerRefillEnabled(UUID playerUuid, boolean enabled) {
+        PlayerConfig config = getPlayerConfig(playerUuid);
+        config.shulkerRefillEnabled = enabled;
+        setPlayerConfig(playerUuid, config);
+    }
+
+    /**
+     * Vérifie si le ShulkerRefill est activé pour un joueur
+     */
+    public boolean isShulkerRefillEnabled(UUID playerUuid) {
+        return getPlayerConfig(playerUuid).shulkerRefillEnabled;
+    }
+
+    /**
+     * Active/désactive les messages de refill pour un joueur
+     */
+    public void setShowRefillMessages(UUID playerUuid, boolean show) {
+        PlayerConfig config = getPlayerConfig(playerUuid);
+        config.showRefillMessages = show;
+        setPlayerConfig(playerUuid, config);
+    }
+
+    /**
+     * Vérifie si les messages de refill sont activés pour un joueur
+     */
+    public boolean shouldShowRefillMessages(UUID playerUuid) {
+        return getPlayerConfig(playerUuid).showRefillMessages;
+    }
+
+    /**
+     * Configuration individuelle d'un joueur
+     */
+    public static class PlayerConfig {
+        public boolean shulkerRefillEnabled = true;
+        public boolean showRefillMessages = true;
+
+        public PlayerConfig() {}
+    }
+}
+
