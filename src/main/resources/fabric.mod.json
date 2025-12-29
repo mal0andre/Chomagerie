@@ -18,6 +18,9 @@
 		],
 		"main": [
 			"tech.maloandre.chomagerie.Chomagerie"
+		],
+		"modmenu": [
+			"tech.maloandre.chomagerie.client.config.ModMenuIntegration"
 		]
 	},
 	"mixins": [
