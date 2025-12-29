@@ -28,6 +28,9 @@ public abstract class PlayerInventoryMixin {
     @Unique
     private Item chomagerie$lastSelectedItem = null;
 
+    @Unique
+    private int chomagerie$lastSelectedCount = 0;
+
 
     /**
      * Surveille quand un stack se vide par décrémentation dans le slot sélectionné uniquement
@@ -42,19 +45,35 @@ public abstract class PlayerInventoryMixin {
         int currentSelectedSlot = getSelectedSlot();
         ItemStack currentStack = inventory.getStack(currentSelectedSlot);
 
-        // Vérifier si le slot sélectionné s'est vidé
+        // Si on surveillait un item et que le slot est maintenant vide
         if (chomagerie$lastSelectedItem != null && currentStack.isEmpty()) {
-            // Le stack s'est vidé, déclencher l'événement
-            ItemStackDepletedCallback.EVENT.invoker().onItemStackDepleted(
-                    player, currentSelectedSlot, chomagerie$lastSelectedItem, null
-            );
-            chomagerie$lastSelectedItem = null;
-        }
-        // Si l'item a changé (pas le même), réinitialiser le suivi
-        else if (!currentStack.isEmpty()) {
-            if (chomagerie$lastSelectedItem != currentStack.getItem()) {
-                chomagerie$lastSelectedItem = currentStack.getItem();
+            // Vérifier que c'était bien une décrémentation (le count était à 1 avant)
+            // Si le count était > 1, c'est probablement un déplacement manuel
+            if (chomagerie$lastSelectedCount == 1) {
+                // Le stack s'est vidé par consommation, déclencher l'événement
+                ItemStackDepletedCallback.EVENT.invoker().onItemStackDepleted(
+                        player, currentSelectedSlot, chomagerie$lastSelectedItem, null
+                );
             }
+            chomagerie$lastSelectedItem = null;
+            chomagerie$lastSelectedCount = 0;
+        }
+        // Si on a un item dans le slot sélectionné
+        else if (!currentStack.isEmpty()) {
+            // Si c'est le même item, mettre à jour le count
+            if (chomagerie$lastSelectedItem == currentStack.getItem()) {
+                chomagerie$lastSelectedCount = currentStack.getCount();
+            }
+            // Si l'item a changé, commencer à surveiller le nouveau
+            else {
+                chomagerie$lastSelectedItem = currentStack.getItem();
+                chomagerie$lastSelectedCount = currentStack.getCount();
+            }
+        }
+        // Si le slot est vide et qu'on ne surveillait rien
+        else {
+            chomagerie$lastSelectedItem = null;
+            chomagerie$lastSelectedCount = 0;
         }
     }
 }
