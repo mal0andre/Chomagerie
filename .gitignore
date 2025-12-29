@@ -1,0 +1,94 @@
+/run/config/fabric/indigo-renderer.properties
+/run/data/fabricDefaultResourcePacks.dat
+/run/downloads/log.json
+/run/logs/2025-12-29-1.log.gz
+/run/logs/2025-12-29-2.log.gz
+/run/logs/2025-12-29-3.log.gz
+/run/logs/2025-12-29-4.log.gz
+/run/logs/debug.log
+/run/logs/debug-1.log.gz
+/run/logs/debug-2.log.gz
+/run/logs/debug-3.log.gz
+/run/logs/debug-4.log.gz
+/run/logs/latest.log
+/run/saves/New World/advancements/c6c946a7-7334-3c2c-8670-50d9130a2dd5.json
+/run/saves/New World/data/chunks.dat
+/run/saves/New World/data/raids.dat
+/run/saves/New World/data/random_sequences.dat
+/run/saves/New World/data/scoreboard.dat
+/run/saves/New World/data/world_border.dat
+/run/saves/New World/DIM1/data/chunks.dat
+/run/saves/New World/DIM1/data/raids_end.dat
+/run/saves/New World/DIM1/data/world_border.dat
+/run/saves/New World/DIM-1/data/chunks.dat
+/run/saves/New World/DIM-1/data/raids.dat
+/run/saves/New World/DIM-1/data/world_border.dat
+/run/saves/New World/entities/r.0.0.mca
+/run/saves/New World/entities/r.0.-1.mca
+/run/saves/New World/entities/r.-1.0.mca
+/run/saves/New World/entities/r.-1.-1.mca
+/run/saves/New World/playerdata/c6c946a7-7334-3c2c-8670-50d9130a2dd5.dat
+/run/saves/New World/playerdata/c6c946a7-7334-3c2c-8670-50d9130a2dd5.dat_old
+/run/saves/New World/poi/r.0.0.mca
+/run/saves/New World/poi/r.0.-1.mca
+/run/saves/New World/poi/r.1.0.mca
+/run/saves/New World/poi/r.1.-1.mca
+/run/saves/New World/poi/r.-1.0.mca
+/run/saves/New World/poi/r.-1.-1.mca
+/run/saves/New World/region/r.0.0.mca
+/run/saves/New World/region/r.0.-1.mca
+/run/saves/New World/region/r.1.0.mca
+/run/saves/New World/region/r.1.-1.mca
+/run/saves/New World/region/r.-1.0.mca
+/run/saves/New World/region/r.-1.-1.mca
+/run/saves/New World/stats/c6c946a7-7334-3c2c-8670-50d9130a2dd5.json
+/run/saves/New World/icon.png
+/run/saves/New World/level.dat
+/run/saves/New World/level.dat_old
+/run/saves/New World/session.lock
+/run/world/advancements/714ce2c2-6604-4d15-84cc-2c74600590e9.json
+/run/world/advancements/e36fd716-f999-4258-8dba-fe6e6977fa6c.json
+/run/world/data/chunks.dat
+/run/world/data/raids.dat
+/run/world/data/random_sequences.dat
+/run/world/data/scoreboard.dat
+/run/world/data/world_border.dat
+/run/world/DIM1/data/chunks.dat
+/run/world/DIM1/data/raids_end.dat
+/run/world/DIM1/data/world_border.dat
+/run/world/DIM-1/data/chunks.dat
+/run/world/DIM-1/data/raids.dat
+/run/world/DIM-1/data/world_border.dat
+/run/world/entities/r.0.0.mca
+/run/world/entities/r.0.-1.mca
+/run/world/entities/r.-1.0.mca
+/run/world/entities/r.-1.-1.mca
+/run/world/playerdata/714ce2c2-6604-4d15-84cc-2c74600590e9.dat
+/run/world/playerdata/714ce2c2-6604-4d15-84cc-2c74600590e9.dat_old
+/run/world/playerdata/e36fd716-f999-4258-8dba-fe6e6977fa6c.dat
+/run/world/playerdata/e36fd716-f999-4258-8dba-fe6e6977fa6c.dat_old
+/run/world/poi/r.0.0.mca
+/run/world/poi/r.0.-1.mca
+/run/world/poi/r.1.0.mca
+/run/world/poi/r.1.-1.mca
+/run/world/poi/r.-1.0.mca
+/run/world/poi/r.-1.-1.mca
+/run/world/region/r.0.0.mca
+/run/world/region/r.0.-1.mca
+/run/world/region/r.1.0.mca
+/run/world/region/r.1.-1.mca
+/run/world/region/r.-1.0.mca
+/run/world/region/r.-1.-1.mca
+/run/world/stats/714ce2c2-6604-4d15-84cc-2c74600590e9.json
+/run/world/stats/e36fd716-f999-4258-8dba-fe6e6977fa6c.json
+/run/world/level.dat
+/run/world/level.dat_old
+/run/world/session.lock
+/run/banned-ips.json
+/run/banned-players.json
+/run/eula.txt
+/run/ops.json
+/run/options.txt
+/run/server.properties
+/run/usercache.json
+/run/whitelist.json
