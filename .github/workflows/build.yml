@@ -6,22 +6,22 @@ jobs:
         if: ${{ github.event_name != 'pull_request' || github.repository != github.event.pull_request.head.repo.full_name }}
         runs-on: ubuntu-latest
         steps:
-            - name: Checkout repository
-              uses: actions/checkout@v4
-              with:
-                  fetch-depth: 0
-            - name: Set up JDK
-              uses: actions/setup-java@v4
-              with:
-                  distribution: 'temurin'
-                  java-version:  '21'
-                  cache:  'gradle'
-            - name: Make gradlew executable
-              run:  chmod +x gradlew
-            - name: Build
-              run:  ./gradlew build
-            - name: Upload Build Artifacts
-              uses: actions/upload-artifact@v4
-              with:
-                  name: Chomagerie-Mod
-                  path: "build/libs/*.jar"
+            -   name: Checkout repository
+                uses: actions/checkout@v4
+                with:
+                    fetch-depth: 0
+            -   name: Set up JDK
+                uses: actions/setup-java@v4
+                with:
+                    distribution: 'temurin'
+                    java-version: '21'
+                    cache: 'gradle'
+            -   name: Make gradlew executable
+                run: chmod +x gradlew
+            -   name: Build
+                run: ./gradlew build
+            -   name: Upload Build Artifacts
+                uses: actions/upload-artifact@v4
+                with:
+                    name: Chomagerie-Mod
+                    path: "build/libs/*.jar"
