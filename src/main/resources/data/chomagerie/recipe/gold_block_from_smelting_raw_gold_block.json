@@ -4,9 +4,7 @@
 	"cookingtime": 1800,
 	"experience": 0.7,
 	"group": "gold_ingot",
-	"ingredient": {
-		"item": "minecraft:raw_gold_block"
-	},
+	"ingredient": "minecraft:raw_gold_block",
 	"result": {
 		"id": "minecraft:gold_block"
 	}

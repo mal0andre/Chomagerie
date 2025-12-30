@@ -7,12 +7,8 @@
 		"###"
 	],
 	"key": {
-		"#": {
-			"item": "minecraft:white_wool"
-		},
-		"X": {
-			"item": "minecraft:orange_dye"
-		}
+		"#": "minecraft:white_wool",
+		"X": "minecraft:orange_dye"
 	},
 	"result": {
 		"id": "minecraft:orange_wool",

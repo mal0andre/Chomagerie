@@ -6,16 +6,11 @@
 		"###"
 	],
 	"key": {
-		"R": {
-			"item": "minecraft:red_dye"
-		},
-		"#": {
-			"item": "minecraft:sand"
-		}
+		"R": "minecraft:red_dye",
+		"#": "minecraft:sand"
 	},
 	"result": {
 		"id": "minecraft:red_sand",
 		"count": 8
 	}
 }
-  

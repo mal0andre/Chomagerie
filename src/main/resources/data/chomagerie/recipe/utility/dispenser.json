@@ -1,24 +1,18 @@
 {
-  "type": "minecraft:crafting_shaped",
-  "category": "equipment",
-  "key": {
-	"#": {
-	  "item": "minecraft:stick"
+	"type": "minecraft:crafting_shaped",
+	"category": "equipment",
+	"key": {
+		"#": "minecraft:stick",
+		"X": "minecraft:string",
+		"D": "minecraft:dropper"
 	},
-	"X": {
-	  "item": "minecraft:string"
-	},
-	"D": {
-	  "item": "minecraft:dropper"
+	"pattern": [
+		" #X",
+		"#DX",
+		" #X"
+	],
+	"result": {
+		"count": 1,
+		"id": "minecraft:dispenser"
 	}
-  },
-  "pattern": [
-	" #X",
-	"#DX",
-	" #X"
-  ],
-  "result": {
-	"count": 1,
-	"id": "minecraft:dispenser"
-  }
 }

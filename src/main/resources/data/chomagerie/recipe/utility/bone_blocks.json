@@ -6,13 +6,10 @@
 		"###"
 	],
 	"key": {
-		"#": {
-			"item": "minecraft:bone"
-		}
+		"#": "minecraft:bone"
 	},
 	"result": {
 		"id": "minecraft:bone_block",
 		"count": 3
 	}
 }
-  

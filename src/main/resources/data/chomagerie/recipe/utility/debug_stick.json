@@ -7,18 +7,10 @@
 		"SR "
 	],
 	"key": {
-		"G": {
-			"item": "minecraft:gold_ingot"
-		},
-		"N": {
-			"item": "minecraft:netherite_ingot"
-		},
-		"R": {
-			"item": "minecraft:redstone"
-		},
-		"S": {
-			"item": "minecraft:stick"
-		}
+		"G": "minecraft:gold_ingot",
+		"N": "minecraft:netherite_ingot",
+		"R": "minecraft:redstone",
+		"S": "minecraft:stick"
 	},
 	"result": {
 		"id": "minecraft:debug_stick",

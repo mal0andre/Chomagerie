@@ -1,15 +1,10 @@
 {
 	"type": "crafting_shapeless",
 	"ingredients": [
-		{
-			"item": "minecraft:basalt"
-		},
-		{
-			"item": "minecraft:bone"
-		}
+		"minecraft:basalt",
+		"minecraft:bone"
 	],
 	"result": {
 		"id": "minecraft:calcite"
 	}
 }
-  
