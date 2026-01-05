@@ -60,4 +60,4 @@ jobs:
             --target=${{ github.ref_name }} \
             --draft=false \
             --prerelease=${{ inputs.releaseType != 'stable' }} \
-            build/libs/*.jar LICENSE.md
+            build/libs/*.jar
