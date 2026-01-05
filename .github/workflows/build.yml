@@ -75,10 +75,20 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           gh release delete mc${{ env.MINECRAFT_VERSION }}-${{ env.MOD_VERSION }} --yes || true
+
+          # Determine if this is a prerelease based on version string or input
+          IS_PRERELEASE=false
+          if [[ "${{ env.MOD_VERSION }}" == *"SNAPSHOT"* ]] || [[ "${{ env.MOD_VERSION }}" == *"alpha"* ]] || [[ "${{ env.MOD_VERSION }}" == *"beta"* ]]; then
+            IS_PRERELEASE=true
+          fi
+          if [ "${{ inputs.releaseType }}" == "alpha" ] || [ "${{ inputs.releaseType }}" == "beta" ]; then
+            IS_PRERELEASE=true
+          fi
+
           gh release create mc${{ env.MINECRAFT_VERSION }}-${{ env.MOD_VERSION }} \
             --title="${{ env.RELEASE_NAME }}" \
             --notes-file=CHANGELOG.md \
             --target=${{ github.ref_name }} \
             --draft=false \
-            --prerelease=${{ inputs.releaseType != 'stable' }} \
+            --prerelease=$IS_PRERELEASE \
             build/libs/*[!sources].jar
