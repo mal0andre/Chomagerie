@@ -27,7 +27,7 @@ jobs:
           path: "build/libs/*.jar"
 
       - name: Extract version and create tag
-        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        if: github.event_name == 'push' && github.ref == 'refs/heads/master'
         run: |
           MOD_VERSION=$(grep 'mod_version' gradle.properties | cut -d'=' -f2)
           TAG_NAME="v${MOD_VERSION}"
