@@ -14,56 +14,56 @@ import tech.maloandre.chomagerie.network.RefillNotificationPayload;
  */
 public class ClientNetworkHandler {
 
-    /**
-     * Envoie la configuration client au serveur
-     */
-    public static void sendConfigToServer() {
-        if (!ClientPlayNetworking.canSend(ConfigSyncPayload.ID)) {
-            return;
-        }
+	/**
+	 * Envoie la configuration client au serveur
+	 */
+	public static void sendConfigToServer() {
+		if (!ClientPlayNetworking.canSend(ConfigSyncPayload.ID)) {
+			return;
+		}
 
-        ChomagerieConfig config = ChomagerieConfig.getInstance();
-        ConfigSyncPayload payload = new ConfigSyncPayload(
-            config.shulkerRefill.isEnabled(),
-            config.shulkerRefill.shouldShowRefillMessages(),
-            config.shulkerRefill.isFilterByNameEnabled(),
-            config.shulkerRefill.getShulkerNameFilter()
-        );
+		ChomagerieConfig config = ChomagerieConfig.getInstance();
+		ConfigSyncPayload payload = new ConfigSyncPayload(
+				config.shulkerRefill.isEnabled(),
+				config.shulkerRefill.shouldShowRefillMessages(),
+				config.shulkerRefill.isFilterByNameEnabled(),
+				config.shulkerRefill.getShulkerNameFilter()
+		);
 
-        ClientPlayNetworking.send(payload);
-    }
+		ClientPlayNetworking.send(payload);
+	}
 
-    /**
-     * Initialise les handlers réseau côté client
-     */
-    public static void init() {
-        // Handler pour les notifications de refill
-        ClientPlayNetworking.registerGlobalReceiver(RefillNotificationPayload.ID, (payload, context) -> {
-            context.client().execute(() -> {
-                ChomagerieConfig config = ChomagerieConfig.getInstance();
-                MinecraftClient client = context.client();
+	/**
+	 * Initialise les handlers réseau côté client
+	 */
+	public static void init() {
+		// Handler pour les notifications de refill
+		ClientPlayNetworking.registerGlobalReceiver(RefillNotificationPayload.ID, (payload, context) -> {
+			context.client().execute(() -> {
+				ChomagerieConfig config = ChomagerieConfig.getInstance();
+				MinecraftClient client = context.client();
 
-                // Afficher le message si activé
-                if (config.shulkerRefill.shouldShowRefillMessages() && client.player != null) {
-                    client.player.sendMessage(
-                        Text.literal("§7[§6Refill§7] §a" + payload.itemName() + " rechargé depuis une shulker box"),
-                        true // Afficher dans l'actionbar
-                    );
-                }
+				// Afficher le message si activé
+				if (config.shulkerRefill.shouldShowRefillMessages() && client.player != null) {
+					client.player.sendMessage(
+							Text.literal("§7[§6Refill§7] §a" + payload.itemName() + " rechargé depuis une shulker box"),
+							true // Afficher dans l'actionbar
+					);
+				}
 
-                // Jouer le son si activé
-                if (config.shulkerRefill.shouldPlaySounds() && client.player != null && client.world != null) {
-                    client.world.playSound(
-                        client.player,
-                        client.player.getBlockPos(),
-                        SoundEvents.ENTITY_ITEM_PICKUP,
-                        SoundCategory.PLAYERS,
-                        0.5f, // Volume
-                        1.2f  // Pitch
-                    );
-                }
-            });
-        });
-    }
+				// Jouer le son si activé
+				if (config.shulkerRefill.shouldPlaySounds() && client.player != null && client.world != null) {
+					client.world.playSound(
+							client.player,
+							client.player.getBlockPos(),
+							SoundEvents.ENTITY_ITEM_PICKUP,
+							SoundCategory.PLAYERS,
+							0.5f, // Volume
+							1.2f  // Pitch
+					);
+				}
+			});
+		});
+	}
 }
 
