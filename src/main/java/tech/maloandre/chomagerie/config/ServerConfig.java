@@ -13,7 +13,7 @@ import java.util.Map;
 import java.util.UUID;
 
 /**
- * Configuration serveur pour stocker les préférences de chaque joueur
+ * Server configuration for storing player preferences
  */
 public class ServerConfig {
 	private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();

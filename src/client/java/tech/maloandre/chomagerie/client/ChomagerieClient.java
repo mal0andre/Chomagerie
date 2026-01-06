@@ -16,28 +16,28 @@ public class ChomagerieClient implements ClientModInitializer {
 
 	@Override
 	public void onInitializeClient() {
-		// Charger la configuration
+		// Load configuration
 		ChomagerieConfig config = ChomagerieConfig.getInstance();
 
-		// Mettre à jour l'état global avec la config ShulkerRefill
+		// Update global state with ShulkerRefill config
 		ModState.setClientEnabled(config.shulkerRefill.isEnabled());
 
 		if (config.shulkerRefill.isEnabled()) {
-			LOGGER.info("Chomagerie - ShulkerRefill est activé côté client");
+			LOGGER.info("Chomagerie - ShulkerRefill is enabled on client");
 		} else {
-			LOGGER.info("Chomagerie - ShulkerRefill est désactivé côté client");
+			LOGGER.info("Chomagerie - ShulkerRefill is disabled on client");
 		}
 
-		// Initialiser le handler réseau
+		// Initialize network handler
 		ClientNetworkHandler.init();
 
-		// Synchroniser la config au serveur lors de la connexion
+		// Synchronize config to server on connection
 		ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> {
 			ClientNetworkHandler.sendConfigToServer();
-			LOGGER.info("Configuration envoyée au serveur");
+			LOGGER.info("Configuration sent to server");
 		});
 
-		// Enregistrer les commandes client
+		// Register client commands
 		ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> {
 			ChomagerieCommand.register(dispatcher);
 		});

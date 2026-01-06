@@ -16,10 +16,10 @@ public class ChomagerieConfig {
 
 	private static ChomagerieConfig instance;
 
-	// Configuration ShulkerRefill
+	// ShulkerRefill configuration
 	public ShulkerRefillConfig shulkerRefill = new ShulkerRefillConfig();
 
-	// Futures configurations (exemples)
+	// Future configurations (examples)
 	// public AutoCraftConfig autoCraft = new AutoCraftConfig();
 	// public StorageManagerConfig storageManager = new StorageManagerConfig();
 

@@ -20,34 +20,34 @@ public class Chomagerie implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
-		LOGGER.info("Initialisation de Chomagerie - Système de refill automatique activé");
+		LOGGER.info("Initializing Chomagerie - Automatic refill system enabled");
 
-		// Initialiser la configuration serveur
+		// Initialize server configuration
 		ServerConfig.getInstance();
 
-		// Enregistrer les types de paquets réseau
+		// Register network packet types
 		PayloadTypeRegistry.playC2S().register(ConfigSyncPayload.ID, ConfigSyncPayload.CODEC);
 		PayloadTypeRegistry.playS2C().register(RefillNotificationPayload.ID, RefillNotificationPayload.CODEC);
 
-		// Enregistrer le handler réseau côté serveur
+		// Register server-side network handler
 		ConfigSyncPayload.registerServerHandler();
 
-		// Détecter les joueurs qui se connectent
+		// Detect when players connect
 		ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
-			// Ici, on ne fait rien. Si le joueur a le mod, il enverra sa config automatiquement
-			// Si après quelques secondes il n'a pas envoyé de config, on suppose qu'il n'a pas le mod
-			LOGGER.debug("Joueur {} connecté, attente de la configuration...", handler.player.getName().getString());
+			// Do nothing here. If the player has the mod, they will send their config automatically
+			// If after a few seconds they haven't sent a config, we assume they don't have the mod
+			LOGGER.debug("Player {} connected, waiting for configuration...", handler.player.getName().getString());
 		});
 
-		// Enregistrer l'événement de refill automatique depuis les shulker boxes
+		// Register automatic refill event from shulker boxes
 		ItemStackDepletedCallback.EVENT.register((player, slot, item, previousStack) -> {
 			if (!player.getEntityWorld().isClient()) {
-				// Vérifier si le mod est activé pour ce joueur côté serveur
-				// Cette méthode vérifie maintenant aussi si le joueur a le mod installé
+				// Check if the mod is enabled for this player on the server
+				// This method now also checks if the player has the mod installed
 				boolean isEnabled = ServerConfig.getInstance().isShulkerRefillEnabled(player.getUuid());
 
 				if (isEnabled) {
-					// Récupérer les paramètres de filtrage du joueur
+					// Get the filtering parameters for this player
 					ServerConfig config = ServerConfig.getInstance();
 					boolean filterByName = config.isFilterByNameEnabled(player.getUuid());
 					String nameFilter = config.getShulkerNameFilter(player.getUuid());
@@ -56,13 +56,13 @@ public class Chomagerie implements ModInitializer {
 							player, slot, item, filterByName, nameFilter
 					);
 
-					// Si le refill a réussi, envoyer une notification au client
+					// If refill succeeded, send notification to client
 					if (result.success() && player instanceof ServerPlayerEntity serverPlayer) {
 						ServerPlayNetworking.send(serverPlayer, new RefillNotificationPayload(result.itemName()));
 					}
 				} else if (!ServerConfig.getInstance().playerHasMod(player.getUuid())) {
-					// Le joueur n'a pas le mod, on ne fait rien (silencieux)
-					LOGGER.debug("Refill ignoré pour {} - Mod non installé", player.getName().getString());
+					// Player doesn't have the mod, do nothing (silent)
+					LOGGER.debug("Refill ignored for {} - Mod not installed", player.getName().getString());
 				}
 			}
 		});

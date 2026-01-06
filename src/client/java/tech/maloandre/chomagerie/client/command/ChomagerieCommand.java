@@ -22,7 +22,7 @@ public class ChomagerieCommand {
 								.then(ClientCommandManager.literal("status")
 										.executes(ChomagerieCommand::showShulkerRefillStatus))
 						)
-				// Futures commandes pour d'autres features
+				// Future commands for other features
 				// .then(ClientCommandManager.literal("autocraft")...)
 		);
 	}
@@ -35,9 +35,9 @@ public class ChomagerieCommand {
 		config.save();
 
 		if (newState) {
-			context.getSource().sendFeedback(Text.literal("§a[Chomagerie] ShulkerRefill activé"));
+			context.getSource().sendFeedback(Text.literal("§a[Chomagerie] ShulkerRefill enabled"));
 		} else {
-			context.getSource().sendFeedback(Text.literal("§c[Chomagerie] ShulkerRefill désactivé"));
+			context.getSource().sendFeedback(Text.literal("§c[Chomagerie] ShulkerRefill disabled"));
 		}
 
 		return 1;
@@ -50,9 +50,9 @@ public class ChomagerieCommand {
 		config.save();
 
 		if (enabled) {
-			context.getSource().sendFeedback(Text.literal("§a[Chomagerie] ShulkerRefill activé"));
+			context.getSource().sendFeedback(Text.literal("§a[Chomagerie] ShulkerRefill enabled"));
 		} else {
-			context.getSource().sendFeedback(Text.literal("§c[Chomagerie] ShulkerRefill désactivé"));
+			context.getSource().sendFeedback(Text.literal("§c[Chomagerie] ShulkerRefill disabled"));
 		}
 
 		return 1;
@@ -60,8 +60,8 @@ public class ChomagerieCommand {
 
 	private static int showShulkerRefillStatus(CommandContext<FabricClientCommandSource> context) {
 		ChomagerieConfig config = ChomagerieConfig.getInstance();
-		String status = config.shulkerRefill.isEnabled() ? "§aactivé" : "§cdésactivé";
-		context.getSource().sendFeedback(Text.literal("§e[Chomagerie] ShulkerRefill est actuellement " + status));
+		String status = config.shulkerRefill.isEnabled() ? "§aenabled" : "§cdisabled";
+		context.getSource().sendFeedback(Text.literal("§e[Chomagerie] ShulkerRefill is currently " + status));
 		return 1;
 	}
 }
