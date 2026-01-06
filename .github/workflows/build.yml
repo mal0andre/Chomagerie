@@ -1,6 +1,9 @@
 name: Build Chomagerie
+
 on:
     push:
+        branches:
+            - "**"
     pull_request:
     workflow_dispatch:
         inputs:
@@ -20,11 +23,14 @@ on:
                     - stable
                     - beta
                     - alpha
+
 jobs:
     build:
         runs-on: ubuntu-latest
+
         permissions:
             contents: write
+
         steps:
             -   name: Checkout repository
                 uses: actions/checkout@v4
@@ -47,13 +53,13 @@ jobs:
             -   name: Grant execute permission for gradlew
                 run: chmod +x gradlew
 
-            -   name: Gradle Release Build
+            -   name: Gradle Build
                 env:
                     RELEASE_WORKFLOW: true
-                    PLATFORM: ${{ inputs.platform }}
+                    PLATFORM: ${{ inputs.platform || 'fabric' }}
                 run: ./gradlew build
 
-            -   name: Set environment variables for the script below
+            -   name: Set environment variables
                 run: |
                     echo "MINECRAFT_VERSION=$(./gradlew -q printMinecraftVersion)" >> $GITHUB_ENV
                     echo "MOD_VERSION=$(./gradlew -q printModVersion)" >> $GITHUB_ENV
@@ -62,33 +68,33 @@ jobs:
                 uses: actions/upload-artifact@v4
                 with:
                     name: Chomagerie-Mod
-                    path: "build/libs/*.jar"
+                    path: build/libs/*.jar
+
+            # ============================
+            # RELEASE (MASTER ONLY)
+            # ============================
 
             -   name: Set Release Name
+                if: github.event_name == 'push' && github.ref == 'refs/heads/master'
                 run: |
-                    if [ "${{ inputs.platform }}" == "fabric" ]; then
-                      echo "RELEASE_NAME=Chomagerie $MOD_VERSION for Minecraft $MINECRAFT_VERSION Fabric" >> $GITHUB_ENV
-                    fi
+                    echo "RELEASE_NAME=Chomagerie $MOD_VERSION for Minecraft $MINECRAFT_VERSION Fabric" >> $GITHUB_ENV
 
             -   name: Create GitHub Release
+                if: github.event_name == 'push' && github.ref == 'refs/heads/master'
                 env:
                     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
                 run: |
-                    gh release delete mc${{ env.MINECRAFT_VERSION }}-${{ env.MOD_VERSION }} --yes || true
+                    gh release delete mc${MINECRAFT_VERSION}-${MOD_VERSION} --yes || true
                     
-                    # Determine if this is a prerelease based on version string or input
                     IS_PRERELEASE=false
-                    if [[ "${{ env.MOD_VERSION }}" == *"SNAPSHOT"* ]] || [[ "${{ env.MOD_VERSION }}" == *"alpha"* ]] || [[ "${{ env.MOD_VERSION }}" == *"beta"* ]]; then
-                      IS_PRERELEASE=true
-                    fi
-                    if [ "${{ inputs.releaseType }}" == "alpha" ] || [ "${{ inputs.releaseType }}" == "beta" ]; then
+                    if [[ "$MOD_VERSION" == *"SNAPSHOT"* ]] || [[ "$MOD_VERSION" == *"alpha"* ]] || [[ "$MOD_VERSION" == *"beta"* ]]; then
                       IS_PRERELEASE=true
                     fi
                     
-                    gh release create mc${{ env.MINECRAFT_VERSION }}-${{ env.MOD_VERSION }} \
-                      --title="${{ env.RELEASE_NAME }}" \
+                    gh release create mc${MINECRAFT_VERSION}-${MOD_VERSION} \
+                      --title="$RELEASE_NAME" \
                       --notes-file=CHANGELOG.md \
-                      --target=${{ github.ref_name }} \
+                      --target=master \
                       --draft=false \
                       --prerelease=$IS_PRERELEASE \
                       build/libs/*[!sources].jar
