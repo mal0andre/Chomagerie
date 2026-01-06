@@ -10,12 +10,12 @@ import tech.maloandre.chomagerie.network.ConfigSyncPayload;
 import tech.maloandre.chomagerie.network.RefillNotificationPayload;
 
 /**
- * Gestionnaire réseau côté client
+ * Client-side network handler
  */
 public class ClientNetworkHandler {
 
 	/**
-	 * Envoie la configuration client au serveur
+	 * Sends client configuration to server
 	 */
 	public static void sendConfigToServer() {
 		if (!ClientPlayNetworking.canSend(ConfigSyncPayload.ID)) {
@@ -34,24 +34,24 @@ public class ClientNetworkHandler {
 	}
 
 	/**
-	 * Initialise les handlers réseau côté client
+	 * Initializes network handlers on client side
 	 */
 	public static void init() {
-		// Handler pour les notifications de refill
+		// Handler for refill notifications
 		ClientPlayNetworking.registerGlobalReceiver(RefillNotificationPayload.ID, (payload, context) -> {
 			context.client().execute(() -> {
 				ChomagerieConfig config = ChomagerieConfig.getInstance();
 				MinecraftClient client = context.client();
 
-				// Afficher le message si activé
+				// Display message if enabled
 				if (config.shulkerRefill.shouldShowRefillMessages() && client.player != null) {
 					client.player.sendMessage(
-							Text.literal("§7[§6Refill§7] §a" + payload.itemName() + " rechargé depuis une shulker box"),
-							true // Afficher dans l'actionbar
+							Text.literal("§7[§6Refill§7] §a" + payload.itemName() + " refilled from a shulker box"),
+							true // Display in action bar
 					);
 				}
 
-				// Jouer le son si activé
+				// Play sound if enabled
 				if (config.shulkerRefill.shouldPlaySounds() && client.player != null && client.world != null) {
 					client.world.playSound(
 							client.player,
