@@ -6,6 +6,7 @@ import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
 import tech.maloandre.chomagerie.client.config.ChomagerieConfig;
+import tech.maloandre.chomagerie.network.AutoPickupNotificationPayload;
 import tech.maloandre.chomagerie.network.ConfigSyncPayload;
 import tech.maloandre.chomagerie.network.RefillNotificationPayload;
 
@@ -27,7 +28,11 @@ public class ClientNetworkHandler {
                 config.shulkerRefill.isEnabled(),
                 config.shulkerRefill.shouldShowRefillMessages(),
                 config.shulkerRefill.isFilterByNameEnabled(),
-                config.shulkerRefill.getShulkerNameFilter()
+                config.shulkerRefill.getShulkerNameFilter(),
+                config.autoPickup.isEnabled(),
+                config.autoPickup.shouldShowPickupMessages(),
+                config.autoPickup.isFilterByNameEnabled(),
+                config.autoPickup.getShulkerNameFilter()
         );
 
         ClientPlayNetworking.send(payload);
@@ -60,6 +65,23 @@ public class ClientNetworkHandler {
                             SoundCategory.PLAYERS,
                             0.5f, // Volume
                             1.2f  // Pitch
+                    );
+                }
+            });
+        });
+
+        // Handler for auto pickup notifications
+        ClientPlayNetworking.registerGlobalReceiver(AutoPickupNotificationPayload.ID, (payload, context) -> {
+            context.client().execute(() -> {
+                ChomagerieConfig config = ChomagerieConfig.getInstance();
+                MinecraftClient client = context.client();
+
+                // Display message if enabled
+                if (config.autoPickup.shouldShowPickupMessages() && client.player != null) {
+                    client.player.sendMessage(
+                            Text.literal("§7[§eAutoPickup§7] §a" + payload.storedCount() + "x " +
+                                    payload.itemName() + " stored in shulker box"),
+                            true // Display in action bar
                     );
                 }
             });

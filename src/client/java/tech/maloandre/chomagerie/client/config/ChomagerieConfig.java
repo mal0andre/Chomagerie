@@ -23,6 +23,9 @@ public class ChomagerieConfig {
     // Notifications configuration
     public NotificationsConfig notifications = new NotificationsConfig();
 
+    // AutoPickup configuration
+    public AutoPickupConfig autoPickup = new AutoPickupConfig();
+
     // Future configurations (examples)
     // public AutoCraftConfig autoCraft = new AutoCraftConfig();
     // public StorageManagerConfig storageManager = new StorageManagerConfig();
@@ -49,6 +52,9 @@ public class ChomagerieConfig {
                     }
                     if (config.notifications == null) {
                         config.notifications = new NotificationsConfig();
+                    }
+                    if (config.autoPickup == null) {
+                        config.autoPickup = new AutoPickupConfig();
                     }
                     // Synchroniser ModState avec la configuration chargée
                     ModState.setClientEnabled(config.shulkerRefill.enabled);
@@ -96,6 +102,9 @@ public class ChomagerieConfig {
                     }
                     if (loaded.notifications != null) {
                         this.notifications = loaded.notifications;
+                    }
+                    if (loaded.autoPickup != null) {
+                        this.autoPickup = loaded.autoPickup;
                     }
                     // Synchroniser ModState avec la configuration rechargée
                     ModState.setClientEnabled(this.shulkerRefill.isEnabled());
@@ -204,5 +213,44 @@ public class ChomagerieConfig {
             this.notificationDuration = duration;
         }
     }
-}
 
+    // Classe interne pour la configuration AutoPickup
+    public static class AutoPickupConfig {
+        public boolean enabled = false;
+        public boolean showPickupMessages = true;
+        public boolean filterByName = false;
+        public String shulkerNameFilter = "storage";
+
+        public boolean isEnabled() {
+            return enabled;
+        }
+
+        public void setEnabled(boolean enabled) {
+            this.enabled = enabled;
+        }
+
+        public boolean shouldShowPickupMessages() {
+            return showPickupMessages;
+        }
+
+        public void setShowPickupMessages(boolean show) {
+            this.showPickupMessages = show;
+        }
+
+        public boolean isFilterByNameEnabled() {
+            return filterByName;
+        }
+
+        public void setFilterByName(boolean filter) {
+            this.filterByName = filter;
+        }
+
+        public String getShulkerNameFilter() {
+            return shulkerNameFilter;
+        }
+
+        public void setShulkerNameFilter(String name) {
+            this.shulkerNameFilter = name;
+        }
+    }
+}

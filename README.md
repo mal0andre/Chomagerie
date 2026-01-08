@@ -14,8 +14,7 @@
 
 ## 🚀 What is Chomagerie?
 
-**Chomagerie** is a Fabric mod that automatically refills consumed item stacks using shulker boxes stored in your *
-*inventory** or **ender chest**.
+**Chomagerie** is a Fabric mod that automatically refills consumed item stacks using shulker boxes stored in your **inventory** or **ender chest**.
 
 When a stack reaches **zero through normal gameplay**, it is instantly refilled — no GUI, no clicks, no interruptions.
 
@@ -33,75 +32,11 @@ gameplay.
 * Refills directly into the **same hotbar slot**
 * No trigger on manual inventory actions
 
-### 🧠 Smart & Efficient
+### 📦 Auto Pickup
 
-* Searches **inventory first**, then **ender chest**
-* Avoids unnecessary refills
-* Respects vanilla stack size limits
-
-### 🧩 Custom Crafting Datapack
-
-* Adds **custom recipes** related to Chomagerie
-* Fully vanilla-compatible
-* Can be enabled or disabled per world
-* Works in singleplayer and multiplayer
-
-### 🖥️ Server-Oriented
-
-* Designed primarily for **server-side usage**
-* Clients must install the mod to benefit
-* Fabric-compatible environment
-
----
-
-## ⚙️ Configuration
-
-Configure the mod using:
-
-* 🧩 **ModMenu** *(optional)*
-* ⌨️ **Commands**
-* 📄 **Config file**
-
-### Commands
-
-```
-/chomagerie shulkerrefill toggle
-/chomagerie shulkerrefill enable
-/chomagerie shulkerrefill disable
-/chomagerie shulkerrefill status
-```
-
-### Config File
-
-```
-config/chomagerie.json
-```
-
-Options:
-
-* `enabled` — Enable / disable the refill system
-* `showRefillMessages` — Toggle refill messages
-
----
-
-## 🧩 Datapack Installation
-
-The datapack is included with the project and must be enabled **per world**.
-
-### Singleplayer
-
-1. Open your world folder
-2. Place the datapack in `datapacks/`
-3. Run `/reload`
-
-### Server
-
-1. Place the datapack in:
-
-   ```
-   world/datapacks/
-   ```
-2. Run `/reload` or restart the server
+* Automatically stores picked up items in shulker boxes
+* Keeps your main inventory organized
+* Works seamlessly with matching items in shulkers
 
 ---
 
@@ -124,14 +59,6 @@ The datapack is included with the project and must be enabled **per world**.
 
 ---
 
-## 🧪 Example Use Case
-
-* You place your last block
-* The stack reaches **0**
-* A shulker box contains more of the same item
-* ✨ The stack is instantly refilled
-
----
 
 ## 📜 License
 

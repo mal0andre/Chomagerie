@@ -160,6 +160,73 @@ public class ServerConfig {
         return getPlayerConfig(playerUuid).shulkerNameFilter;
     }
 
+    // ============== AutoPickup Methods ==============
+
+    /**
+     * Active/désactive l'AutoPickup pour un joueur
+     */
+    public void setAutoPickupEnabled(UUID playerUuid, boolean enabled) {
+        PlayerConfig config = getPlayerConfig(playerUuid);
+        config.autoPickupEnabled = enabled;
+        setPlayerConfig(playerUuid, config);
+    }
+
+    /**
+     * Vérifie si l'AutoPickup est activé pour un joueur
+     */
+    public boolean isAutoPickupEnabled(UUID playerUuid) {
+        PlayerConfig config = getPlayerConfig(playerUuid);
+        return config.hasModInstalled && config.autoPickupEnabled;
+    }
+
+    /**
+     * Active/désactive les messages d'auto pickup pour un joueur
+     */
+    public void setAutoPickupShowMessages(UUID playerUuid, boolean show) {
+        PlayerConfig config = getPlayerConfig(playerUuid);
+        config.autoPickupShowMessages = show;
+        setPlayerConfig(playerUuid, config);
+    }
+
+    /**
+     * Vérifie si les messages d'auto pickup sont activés pour un joueur
+     */
+    public boolean shouldShowAutoPickupMessages(UUID playerUuid) {
+        return getPlayerConfig(playerUuid).autoPickupShowMessages;
+    }
+
+    /**
+     * Active/désactive le filtrage par nom de shulker pour l'auto pickup
+     */
+    public void setAutoPickupFilterByName(UUID playerUuid, boolean filter) {
+        PlayerConfig config = getPlayerConfig(playerUuid);
+        config.autoPickupFilterByName = filter;
+        setPlayerConfig(playerUuid, config);
+    }
+
+    /**
+     * Vérifie si le filtrage par nom est activé pour l'auto pickup
+     */
+    public boolean isAutoPickupFilterByNameEnabled(UUID playerUuid) {
+        return getPlayerConfig(playerUuid).autoPickupFilterByName;
+    }
+
+    /**
+     * Définit le nom de filtre pour les shulker boxes de l'auto pickup
+     */
+    public void setAutoPickupShulkerNameFilter(UUID playerUuid, String filter) {
+        PlayerConfig config = getPlayerConfig(playerUuid);
+        config.autoPickupShulkerNameFilter = filter;
+        setPlayerConfig(playerUuid, config);
+    }
+
+    /**
+     * Récupère le nom de filtre pour les shulker boxes de l'auto pickup
+     */
+    public String getAutoPickupShulkerNameFilter(UUID playerUuid) {
+        return getPlayerConfig(playerUuid).autoPickupShulkerNameFilter;
+    }
+
     /**
      * Configuration individuelle d'un joueur
      */
@@ -170,8 +237,13 @@ public class ServerConfig {
         public boolean filterByName = false;
         public String shulkerNameFilter = "restock same";
 
+        // AutoPickup configuration
+        public boolean autoPickupEnabled = false;
+        public boolean autoPickupShowMessages = true;
+        public boolean autoPickupFilterByName = false;
+        public String autoPickupShulkerNameFilter = "storage";
+
         public PlayerConfig() {
         }
     }
 }
-

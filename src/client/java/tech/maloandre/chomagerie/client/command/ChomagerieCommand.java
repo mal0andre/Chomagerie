@@ -22,8 +22,18 @@ public class ChomagerieCommand {
                                 .then(ClientCommandManager.literal("status")
                                         .executes(ChomagerieCommand::showShulkerRefillStatus))
                         )
-                // Future commands for other features
-                // .then(ClientCommandManager.literal("autocraft")...)
+                        .then(ClientCommandManager.literal("autopickup")
+                                .then(ClientCommandManager.literal("toggle")
+                                        .executes(ChomagerieCommand::toggleAutoPickup))
+                                .then(ClientCommandManager.literal("enable")
+                                        .executes(context -> setAutoPickupEnabled(context, true)))
+                                .then(ClientCommandManager.literal("disable")
+                                        .executes(context -> setAutoPickupEnabled(context, false)))
+                                .then(ClientCommandManager.literal("status")
+                                        .executes(ChomagerieCommand::showAutoPickupStatus))
+                        )
+                        .then(ClientCommandManager.literal("status")
+                                .executes(ChomagerieCommand::showStatus))
         );
     }
 
@@ -62,6 +72,53 @@ public class ChomagerieCommand {
         ChomagerieConfig config = ChomagerieConfig.getInstance();
         String status = config.shulkerRefill.isEnabled() ? "§aenabled" : "§cdisabled";
         context.getSource().sendFeedback(Text.literal("§e[Chomagerie] ShulkerRefill is currently " + status));
+        return 1;
+    }
+
+    private static int toggleAutoPickup(CommandContext<FabricClientCommandSource> context) {
+        ChomagerieConfig config = ChomagerieConfig.getInstance();
+        boolean newState = !config.autoPickup.isEnabled();
+        config.autoPickup.setEnabled(newState);
+        config.save();
+
+        if (newState) {
+            context.getSource().sendFeedback(Text.literal("§a[Chomagerie] AutoPickup enabled"));
+        } else {
+            context.getSource().sendFeedback(Text.literal("§c[Chomagerie] AutoPickup disabled"));
+        }
+
+        return 1;
+    }
+
+    private static int setAutoPickupEnabled(CommandContext<FabricClientCommandSource> context, boolean enabled) {
+        ChomagerieConfig config = ChomagerieConfig.getInstance();
+        config.autoPickup.setEnabled(enabled);
+        config.save();
+
+        if (enabled) {
+            context.getSource().sendFeedback(Text.literal("§a[Chomagerie] AutoPickup enabled"));
+        } else {
+            context.getSource().sendFeedback(Text.literal("§c[Chomagerie] AutoPickup disabled"));
+        }
+
+        return 1;
+    }
+
+    private static int showAutoPickupStatus(CommandContext<FabricClientCommandSource> context) {
+        ChomagerieConfig config = ChomagerieConfig.getInstance();
+        String status = config.autoPickup.isEnabled() ? "§aenabled" : "§cdisabled";
+        context.getSource().sendFeedback(Text.literal("§e[Chomagerie] AutoPickup is currently " + status));
+        return 1;
+    }
+
+    private static int showStatus(CommandContext<FabricClientCommandSource> context) {
+        ChomagerieConfig config = ChomagerieConfig.getInstance();
+        String refillStatus = config.shulkerRefill.isEnabled() ? "§aenabled" : "§cdisabled";
+        String pickupStatus = config.autoPickup.isEnabled() ? "§aenabled" : "§cdisabled";
+
+        context.getSource().sendFeedback(Text.literal("§e[Chomagerie] Status:"));
+        context.getSource().sendFeedback(Text.literal("  §7ShulkerRefill: " + refillStatus));
+        context.getSource().sendFeedback(Text.literal("  §7AutoPickup: " + pickupStatus));
         return 1;
     }
 }

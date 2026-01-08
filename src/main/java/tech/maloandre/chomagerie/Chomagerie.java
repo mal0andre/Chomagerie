@@ -8,9 +8,12 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import tech.maloandre.chomagerie.config.ServerConfig;
+import tech.maloandre.chomagerie.event.ItemPickupCallback;
 import tech.maloandre.chomagerie.event.ItemStackDepletedCallback;
+import tech.maloandre.chomagerie.network.AutoPickupNotificationPayload;
 import tech.maloandre.chomagerie.network.ConfigSyncPayload;
 import tech.maloandre.chomagerie.network.RefillNotificationPayload;
+import tech.maloandre.chomagerie.util.AutoPickupHandler;
 import tech.maloandre.chomagerie.util.ShulkerRefillHandler;
 
 public class Chomagerie implements ModInitializer {
@@ -28,6 +31,7 @@ public class Chomagerie implements ModInitializer {
         // Register network packet types
         PayloadTypeRegistry.playC2S().register(ConfigSyncPayload.ID, ConfigSyncPayload.CODEC);
         PayloadTypeRegistry.playS2C().register(RefillNotificationPayload.ID, RefillNotificationPayload.CODEC);
+        PayloadTypeRegistry.playS2C().register(AutoPickupNotificationPayload.ID, AutoPickupNotificationPayload.CODEC);
 
         // Register server-side network handler
         ConfigSyncPayload.registerServerHandler();
@@ -63,6 +67,35 @@ public class Chomagerie implements ModInitializer {
                 } else if (!ServerConfig.getInstance().playerHasMod(player.getUuid())) {
                     // Player doesn't have the mod, do nothing (silent)
                     LOGGER.debug("Refill ignored for {} - Mod not installed", player.getName().getString());
+                }
+            }
+        });
+
+        // Register automatic pickup event to store items in shulker boxes
+        ItemPickupCallback.EVENT.register((player, stack) -> {
+            if (!player.getEntityWorld().isClient()) {
+                // Check if auto pickup is enabled for this player
+                ServerConfig config = ServerConfig.getInstance();
+                boolean isAutoPickupEnabled = config.isAutoPickupEnabled(player.getUuid());
+
+                if (isAutoPickupEnabled && config.playerHasMod(player.getUuid())) {
+                    // Get the filtering parameters for this player
+                    boolean filterByName = config.isAutoPickupFilterByNameEnabled(player.getUuid());
+                    String nameFilter = config.getAutoPickupShulkerNameFilter(player.getUuid());
+
+                    AutoPickupHandler.PickupResult result = AutoPickupHandler.tryStoreInShulker(
+                            player, stack, filterByName, nameFilter
+                    );
+
+                    // If storage succeeded, send notification to client if needed
+                    if (result.success() && player instanceof ServerPlayerEntity serverPlayer) {
+                        if (config.shouldShowAutoPickupMessages(player.getUuid())) {
+                            ServerPlayNetworking.send(serverPlayer,
+                                    new AutoPickupNotificationPayload(result.itemName(), result.storedCount()));
+                        }
+                        LOGGER.debug("Auto-stored {} x{} in shulker for {}",
+                                result.itemName(), result.storedCount(), player.getName().getString());
+                    }
                 }
             }
         });

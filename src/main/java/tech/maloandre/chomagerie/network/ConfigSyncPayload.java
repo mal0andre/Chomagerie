@@ -16,7 +16,11 @@ public record ConfigSyncPayload(
         boolean shulkerRefillEnabled,
         boolean showRefillMessages,
         boolean filterByName,
-        String shulkerNameFilter
+        String shulkerNameFilter,
+        boolean autoPickupEnabled,
+        boolean autoPickupShowMessages,
+        boolean autoPickupFilterByName,
+        String autoPickupShulkerNameFilter
 ) implements CustomPayload {
 
     public static final CustomPayload.Id<ConfigSyncPayload> ID =
@@ -28,8 +32,16 @@ public record ConfigSyncPayload(
                 buf.writeBoolean(value.showRefillMessages);
                 buf.writeBoolean(value.filterByName);
                 buf.writeString(value.shulkerNameFilter);
+                buf.writeBoolean(value.autoPickupEnabled);
+                buf.writeBoolean(value.autoPickupShowMessages);
+                buf.writeBoolean(value.autoPickupFilterByName);
+                buf.writeString(value.autoPickupShulkerNameFilter);
             },
             (buf) -> new ConfigSyncPayload(
+                    buf.readBoolean(),
+                    buf.readBoolean(),
+                    buf.readBoolean(),
+                    buf.readString(),
                     buf.readBoolean(),
                     buf.readBoolean(),
                     buf.readBoolean(),
@@ -50,14 +62,20 @@ public record ConfigSyncPayload(
             // Marquer que le joueur a le mod installé
             config.setPlayerHasMod(player.getUuid(), true);
 
-            // Appliquer sa configuration
+            // Appliquer sa configuration ShulkerRefill
             config.setShulkerRefillEnabled(player.getUuid(), payload.shulkerRefillEnabled);
             config.setShowRefillMessages(player.getUuid(), payload.showRefillMessages);
             config.setFilterByName(player.getUuid(), payload.filterByName);
             config.setShulkerNameFilter(player.getUuid(), payload.shulkerNameFilter);
 
-            Chomagerie.LOGGER.info("Configuration synchronisée pour le joueur {} - ShulkerRefill: {}, Filtre: {} (Mod installé)",
-                    player.getName().getString(), payload.shulkerRefillEnabled, payload.filterByName ? payload.shulkerNameFilter : "désactivé");
+            // Appliquer sa configuration AutoPickup
+            config.setAutoPickupEnabled(player.getUuid(), payload.autoPickupEnabled);
+            config.setAutoPickupShowMessages(player.getUuid(), payload.autoPickupShowMessages);
+            config.setAutoPickupFilterByName(player.getUuid(), payload.autoPickupFilterByName);
+            config.setAutoPickupShulkerNameFilter(player.getUuid(), payload.autoPickupShulkerNameFilter);
+
+            Chomagerie.LOGGER.info("Configuration synchronisée pour le joueur {} - ShulkerRefill: {}, AutoPickup: {} (Mod installé)",
+                    player.getName().getString(), payload.shulkerRefillEnabled, payload.autoPickupEnabled);
         });
     }
 

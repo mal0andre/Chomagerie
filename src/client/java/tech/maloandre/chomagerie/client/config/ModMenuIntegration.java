@@ -88,6 +88,58 @@ public class ModMenuIntegration implements ModMenuApi {
                     .build());
 
 
+            // ============== AutoPickup Category ==============
+            ConfigCategory autoPickupCategory = builder.getOrCreateCategory(Text.literal("AutoPickup"));
+
+            // Option to enable/disable AutoPickup
+            autoPickupCategory.addEntry(entryBuilder.startBooleanToggle(
+                            Text.literal("Enable AutoPickup"),
+                            config.autoPickup.isEnabled()
+                    )
+                    .setDefaultValue(false)
+                    .setTooltip(Text.literal("Automatically stores picked up items in shulker boxes that already contain that item type"))
+                    .setSaveConsumer(newValue -> {
+                        config.autoPickup.setEnabled(newValue);
+                    })
+                    .build());
+
+            // Option to show pickup messages
+            autoPickupCategory.addEntry(entryBuilder.startBooleanToggle(
+                            Text.literal("Show Messages"),
+                            config.autoPickup.shouldShowPickupMessages()
+                    )
+                    .setDefaultValue(true)
+                    .setTooltip(Text.literal("Displays a message when an item is stored in a shulker box"))
+                    .setSaveConsumer(newValue -> {
+                        config.autoPickup.setShowPickupMessages(newValue);
+                    })
+                    .build());
+
+            // Option to filter by shulker box name
+            autoPickupCategory.addEntry(entryBuilder.startBooleanToggle(
+                            Text.literal("Filter by Shulker Name"),
+                            config.autoPickup.isFilterByNameEnabled()
+                    )
+                    .setDefaultValue(false)
+                    .setTooltip(Text.literal("Only uses shulker boxes with a specific name for auto pickup"))
+                    .setSaveConsumer(newValue -> {
+                        config.autoPickup.setFilterByName(newValue);
+                    })
+                    .build());
+
+            // Option to set the name of shulker boxes to use
+            autoPickupCategory.addEntry(entryBuilder.startStrField(
+                            Text.literal("Shulker Box Name"),
+                            config.autoPickup.getShulkerNameFilter()
+                    )
+                    .setDefaultValue("storage")
+                    .setTooltip(Text.literal("Only shulker boxes with this exact name will be used for auto pickup"))
+                    .setSaveConsumer(newValue -> {
+                        config.autoPickup.setShulkerNameFilter(newValue);
+                    })
+                    .build());
+
+
             // ============== Notifications Category ==============
             ConfigCategory notificationsCategory = builder.getOrCreateCategory(Text.literal("Notifications"));
 
