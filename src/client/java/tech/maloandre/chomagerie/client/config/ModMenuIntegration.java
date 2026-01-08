@@ -25,18 +25,6 @@ public class ModMenuIntegration implements ModMenuApi {
             ConfigCategory shulkerRefillCategory = builder.getOrCreateCategory(Text.literal("ShulkerRefill"));
             ConfigEntryBuilder entryBuilder = builder.entryBuilder();
 
-            // Option to show refill messages
-            shulkerRefillCategory.addEntry(entryBuilder.startBooleanToggle(
-                            Text.literal("Show Messages"),
-                            config.shulkerRefill.shouldShowRefillMessages()
-                    )
-                    .setDefaultValue(true)
-                    .setTooltip(Text.literal("Displays a message when an item is refilled from a shulker box"))
-                    .setSaveConsumer(newValue -> {
-                        config.shulkerRefill.setShowRefillMessages(newValue);
-                    })
-                    .build());
-
             // Option to enable/disable ShulkerRefill
             shulkerRefillCategory.addEntry(entryBuilder.startBooleanToggle(
                             Text.literal("Enable ShulkerRefill"),
@@ -50,6 +38,15 @@ public class ModMenuIntegration implements ModMenuApi {
                     })
                     .build());
 
+            // Option to show refill messages
+            shulkerRefillCategory.addEntry(entryBuilder.startBooleanToggle(
+                            Text.literal("Show Messages"),
+                            config.shulkerRefill.shouldShowRefillMessages()
+                    )
+                    .setDefaultValue(true)
+                    .setTooltip(Text.literal("Displays a message when an item is refilled from a shulker box"))
+                    .setSaveConsumer(config.shulkerRefill::setShowRefillMessages)
+                    .build());
 
             // Option to play sounds during refill
             shulkerRefillCategory.addEntry(entryBuilder.startBooleanToggle(
@@ -58,9 +55,7 @@ public class ModMenuIntegration implements ModMenuApi {
                     )
                     .setDefaultValue(true)
                     .setTooltip(Text.literal("Plays a sound when an item is refilled from a shulker box"))
-                    .setSaveConsumer(newValue -> {
-                        config.shulkerRefill.setPlaySounds(newValue);
-                    })
+                    .setSaveConsumer(config.shulkerRefill::setPlaySounds)
                     .build());
 
             // Option to filter by shulker box name
@@ -70,9 +65,7 @@ public class ModMenuIntegration implements ModMenuApi {
                     )
                     .setDefaultValue(false)
                     .setTooltip(Text.literal("Only uses shulker boxes with a specific name for refill"))
-                    .setSaveConsumer(newValue -> {
-                        config.shulkerRefill.setFilterByName(newValue);
-                    })
+                    .setSaveConsumer(config.shulkerRefill::setFilterByName)
                     .build());
 
             // Option to set the name of shulker boxes to use
@@ -82,9 +75,7 @@ public class ModMenuIntegration implements ModMenuApi {
                     )
                     .setDefaultValue("restock same")
                     .setTooltip(Text.literal("Only shulker boxes with this exact name will be used for refill"))
-                    .setSaveConsumer(newValue -> {
-                        config.shulkerRefill.setShulkerNameFilter(newValue);
-                    })
+                    .setSaveConsumer(config.shulkerRefill::setShulkerNameFilter)
                     .build());
 
 
@@ -98,9 +89,7 @@ public class ModMenuIntegration implements ModMenuApi {
                     )
                     .setDefaultValue(false)
                     .setTooltip(Text.literal("Automatically stores picked up items in shulker boxes that already contain that item type"))
-                    .setSaveConsumer(newValue -> {
-                        config.autoPickup.setEnabled(newValue);
-                    })
+                    .setSaveConsumer(config.autoPickup::setEnabled)
                     .build());
 
             // Option to show pickup messages
@@ -110,9 +99,7 @@ public class ModMenuIntegration implements ModMenuApi {
                     )
                     .setDefaultValue(true)
                     .setTooltip(Text.literal("Displays a message when an item is stored in a shulker box"))
-                    .setSaveConsumer(newValue -> {
-                        config.autoPickup.setShowPickupMessages(newValue);
-                    })
+                    .setSaveConsumer(config.autoPickup::setShowPickupMessages)
                     .build());
 
             // Option to filter by shulker box name
@@ -122,9 +109,7 @@ public class ModMenuIntegration implements ModMenuApi {
                     )
                     .setDefaultValue(false)
                     .setTooltip(Text.literal("Only uses shulker boxes with a specific name for auto pickup"))
-                    .setSaveConsumer(newValue -> {
-                        config.autoPickup.setFilterByName(newValue);
-                    })
+                    .setSaveConsumer(config.autoPickup::setFilterByName)
                     .build());
 
             // Option to set the name of shulker boxes to use
@@ -134,73 +119,7 @@ public class ModMenuIntegration implements ModMenuApi {
                     )
                     .setDefaultValue("storage")
                     .setTooltip(Text.literal("Only shulker boxes with this exact name will be used for auto pickup"))
-                    .setSaveConsumer(newValue -> {
-                        config.autoPickup.setShulkerNameFilter(newValue);
-                    })
-                    .build());
-
-
-            // ============== Notifications Category ==============
-            ConfigCategory notificationsCategory = builder.getOrCreateCategory(Text.literal("Notifications"));
-
-            // Option to enable notifications
-            notificationsCategory.addEntry(entryBuilder.startBooleanToggle(
-                            Text.literal("Activer les notifications"),
-                            config.notifications.isNotificationsEnabled()
-                    )
-                    .setDefaultValue(true)
-                    .setTooltip(Text.literal("Active ou désactive toutes les notifications"))
-                    .setSaveConsumer(newValue -> {
-                        config.notifications.setNotificationsEnabled(newValue);
-                    })
-                    .build());
-
-            // Option to notify on success
-            notificationsCategory.addEntry(entryBuilder.startBooleanToggle(
-                            Text.literal("Notifier en cas de succès"),
-                            config.notifications.shouldNotifyOnSuccess()
-                    )
-                    .setDefaultValue(true)
-                    .setTooltip(Text.literal("Affiche une notification quand une action réussit"))
-                    .setSaveConsumer(newValue -> {
-                        config.notifications.setNotifyOnSuccess(newValue);
-                    })
-                    .build());
-
-            // Option to notify on error
-            notificationsCategory.addEntry(entryBuilder.startBooleanToggle(
-                            Text.literal("Notifier en cas d'erreur"),
-                            config.notifications.shouldNotifyOnError()
-                    )
-                    .setDefaultValue(true)
-                    .setTooltip(Text.literal("Affiche une notification quand une erreur se produit"))
-                    .setSaveConsumer(newValue -> {
-                        config.notifications.setNotifyOnError(newValue);
-                    })
-                    .build());
-
-            // Option to use action bar
-            notificationsCategory.addEntry(entryBuilder.startBooleanToggle(
-                            Text.literal("Utiliser la barre d'action"),
-                            config.notifications.shouldUseActionBar()
-                    )
-                    .setDefaultValue(true)
-                    .setTooltip(Text.literal("Affiche les notifications dans la barre d'action au lieu du chat"))
-                    .setSaveConsumer(newValue -> {
-                        config.notifications.setUseActionBar(newValue);
-                    })
-                    .build());
-
-            // Option for notification duration
-            notificationsCategory.addEntry(entryBuilder.startIntField(
-                            Text.literal("Durée des notifications (secondes)"),
-                            config.notifications.getNotificationDuration()
-                    )
-                    .setDefaultValue(3)
-                    .setTooltip(Text.literal("Durée d'affichage des notifications en secondes"))
-                    .setSaveConsumer(newValue -> {
-                        config.notifications.setNotificationDuration(newValue);
-                    })
+                    .setSaveConsumer(config.autoPickup::setShulkerNameFilter)
                     .build());
 
 

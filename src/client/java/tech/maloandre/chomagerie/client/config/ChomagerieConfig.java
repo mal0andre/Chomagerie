@@ -20,9 +20,6 @@ public class ChomagerieConfig {
     public ShulkerRefillConfig shulkerRefill = new ShulkerRefillConfig();
 
 
-    // Notifications configuration
-    public NotificationsConfig notifications = new NotificationsConfig();
-
     // AutoPickup configuration
     public AutoPickupConfig autoPickup = new AutoPickupConfig();
 
@@ -49,9 +46,6 @@ public class ChomagerieConfig {
                     // Assurer que les sous-configs sont initialisées
                     if (config.shulkerRefill == null) {
                         config.shulkerRefill = new ShulkerRefillConfig();
-                    }
-                    if (config.notifications == null) {
-                        config.notifications = new NotificationsConfig();
                     }
                     if (config.autoPickup == null) {
                         config.autoPickup = new AutoPickupConfig();
@@ -99,9 +93,6 @@ public class ChomagerieConfig {
                     // Mettre à jour l'instance actuelle avec les valeurs chargées
                     if (loaded.shulkerRefill != null) {
                         this.shulkerRefill = loaded.shulkerRefill;
-                    }
-                    if (loaded.notifications != null) {
-                        this.notifications = loaded.notifications;
                     }
                     if (loaded.autoPickup != null) {
                         this.autoPickup = loaded.autoPickup;
@@ -165,54 +156,6 @@ public class ChomagerieConfig {
     }
 
 
-    // Classe interne pour la configuration Notifications
-    public static class NotificationsConfig {
-        public boolean enableNotifications = true;
-        public boolean notifyOnSuccess = true;
-        public boolean notifyOnError = true;
-        public boolean useActionBar = true;
-        public int notificationDuration = 3;
-
-        public boolean isNotificationsEnabled() {
-            return enableNotifications;
-        }
-
-        public void setNotificationsEnabled(boolean enabled) {
-            this.enableNotifications = enabled;
-        }
-
-        public boolean shouldNotifyOnSuccess() {
-            return notifyOnSuccess;
-        }
-
-        public void setNotifyOnSuccess(boolean notify) {
-            this.notifyOnSuccess = notify;
-        }
-
-        public boolean shouldNotifyOnError() {
-            return notifyOnError;
-        }
-
-        public void setNotifyOnError(boolean notify) {
-            this.notifyOnError = notify;
-        }
-
-        public boolean shouldUseActionBar() {
-            return useActionBar;
-        }
-
-        public void setUseActionBar(boolean use) {
-            this.useActionBar = use;
-        }
-
-        public int getNotificationDuration() {
-            return notificationDuration;
-        }
-
-        public void setNotificationDuration(int duration) {
-            this.notificationDuration = duration;
-        }
-    }
 
     // Classe interne pour la configuration AutoPickup
     public static class AutoPickupConfig {
