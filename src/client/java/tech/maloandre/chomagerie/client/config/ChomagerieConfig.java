@@ -19,8 +19,6 @@ public class ChomagerieConfig {
     // ShulkerRefill configuration
     public ShulkerRefillConfig shulkerRefill = new ShulkerRefillConfig();
 
-    // UI configuration
-    public UIConfig ui = new UIConfig();
 
     // Notifications configuration
     public NotificationsConfig notifications = new NotificationsConfig();
@@ -48,9 +46,6 @@ public class ChomagerieConfig {
                     // Assurer que les sous-configs sont initialisées
                     if (config.shulkerRefill == null) {
                         config.shulkerRefill = new ShulkerRefillConfig();
-                    }
-                    if (config.ui == null) {
-                        config.ui = new UIConfig();
                     }
                     if (config.notifications == null) {
                         config.notifications = new NotificationsConfig();
@@ -98,9 +93,6 @@ public class ChomagerieConfig {
                     // Mettre à jour l'instance actuelle avec les valeurs chargées
                     if (loaded.shulkerRefill != null) {
                         this.shulkerRefill = loaded.shulkerRefill;
-                    }
-                    if (loaded.ui != null) {
-                        this.ui = loaded.ui;
                     }
                     if (loaded.notifications != null) {
                         this.notifications = loaded.notifications;
@@ -163,45 +155,6 @@ public class ChomagerieConfig {
         }
     }
 
-    // Classe interne pour la configuration UI
-    public static class UIConfig {
-        public boolean showHUD = true;
-        public float hudOpacity = 1.0f;
-        public String hudPosition = "top-right";
-        public boolean compactMode = false;
-
-        public boolean isShowHUD() {
-            return showHUD;
-        }
-
-        public void setShowHUD(boolean show) {
-            this.showHUD = show;
-        }
-
-        public float getHudOpacity() {
-            return hudOpacity;
-        }
-
-        public void setHudOpacity(float opacity) {
-            this.hudOpacity = opacity;
-        }
-
-        public String getHudPosition() {
-            return hudPosition;
-        }
-
-        public void setHudPosition(String position) {
-            this.hudPosition = position;
-        }
-
-        public boolean isCompactMode() {
-            return compactMode;
-        }
-
-        public void setCompactMode(boolean compact) {
-            this.compactMode = compact;
-        }
-    }
 
     // Classe interne pour la configuration Notifications
     public static class NotificationsConfig {
