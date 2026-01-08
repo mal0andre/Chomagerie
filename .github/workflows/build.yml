@@ -131,7 +131,7 @@ jobs:
         if: github.event_name != 'pull_request' && !contains(github.event.head_commit.message, 'unrelease') && steps.check_changelog.outputs.publish == 'true'
         uses: cloudnode-pro/modrinth-publish@v2
         with:
-          token: ${{ secrets.MODRINTH_TOKEN }}
+          token: ${{ secrets.MODRINTH_API_KEY }}
           project: ${{ vars.MODRINTH_PROJECT_ID }}
           name: ${{ env.RELEASE_NAME }}
           version: ${{ env.MOD_VERSION }}
