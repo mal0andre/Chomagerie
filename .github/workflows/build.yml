@@ -58,6 +58,28 @@ jobs:
           echo "MINECRAFT_VERSION=$(./gradlew -q printMinecraftVersion)" >> $GITHUB_ENV
           echo "MOD_VERSION=$(./gradlew -q printModVersion)" >> $GITHUB_ENV
 
+      # Prépare la liste des fichiers JAR à envoyer à Modrinth (exclut les -sources et -dev)
+      - name: Prepare Modrinth files list
+        id: prepare_modrinth_files
+        run: |
+          set -e
+          FILES=$(ls -1 build/libs/*.jar 2>/dev/null | grep -v -E '(-sources\.jar$|-dev\.jar$)' || true)
+          if [ -z "$FILES" ]; then
+            FILES=$(ls -1 build/libs/*.jar 2>/dev/null || true)
+          fi
+          echo "files<<EOF" >> $GITHUB_OUTPUT
+          echo "$FILES" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+      # Map releaseType -> channel Modrinth
+      - name: Set Modrinth channel
+        run: |
+          if [ "${{ inputs.releaseType }}" == "stable" ]; then
+            echo "MODRINTH_CHANNEL=release" >> $GITHUB_ENV
+          else
+            echo "MODRINTH_CHANNEL=${{ inputs.releaseType }}" >> $GITHUB_ENV
+          fi
+
       - name: Upload Build Artifacts
         uses: actions/upload-artifact@v4
         with:
@@ -70,8 +92,18 @@ jobs:
             echo "RELEASE_NAME=Chomagerie $MOD_VERSION for Minecraft $MINECRAFT_VERSION Fabric" >> $GITHUB_ENV
           fi
 
+      # Vérifie que le CHANGELOG contient un en-tête « Release »
+      - name: Check changelog for Release
+        id: check_changelog
+        run: |
+          if grep -qiE '^\s*#+\s*\[?Release\]?([[:space:]]|$)' CHANGELOG.md; then
+            echo "publish=true" >> $GITHUB_OUTPUT
+          else
+            echo "publish=false" >> $GITHUB_OUTPUT
+          fi
+
       - name: Create GitHub Release
-        if: "!contains(github.event.head_commit.message, 'unrelease')"
+        if: github.event_name != 'pull_request' && !contains(github.event.head_commit.message, 'unrelease')
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
@@ -93,3 +125,18 @@ jobs:
             --draft=false \
             --prerelease=$IS_PRERELEASE \
             build/libs/*[!sources].jar
+
+      # Publication sur Modrinth (utilise cloudnode-pro/modrinth-publish@v2) — seulement si « Release » dans le changelog
+      - name: Publish to Modrinth
+        if: github.event_name != 'pull_request' && !contains(github.event.head_commit.message, 'unrelease') && steps.check_changelog.outputs.publish == 'true'
+        uses: cloudnode-pro/modrinth-publish@v2
+        with:
+          token: ${{ secrets.MODRINTH_TOKEN }}
+          project: ${{ vars.MODRINTH_PROJECT_ID }}
+          name: ${{ env.RELEASE_NAME }}
+          version: ${{ env.MOD_VERSION }}
+          channel: ${{ env.MODRINTH_CHANNEL }}
+          loaders: |-
+            fabric
+          game-versions: ${{ env.MINECRAFT_VERSION }}
+          files: ${{ steps.prepare_modrinth_files.outputs.files }}
