@@ -2,9 +2,15 @@
 
 All notable changes to this project will be documented in this file.
 
-## [1.2] - 2026-01-05
+## Release
+
+### [1.4] - 2026-01-08
+
+### Added
+- Compatibility and internal updates for the latest Minecraft/Fabric toolchain.
+
+### Changed
+- General performance and stability improvements.
 
 ### Fixed
-
-- Fixed item depletion detection by adding usage statistics verification to prevent false triggers when items are
-  manually moved or dropped from inventory.
+- Minor fixes to item usage tracking to reduce false positives in edge cases.
